@@ -66,17 +66,17 @@ const Jobs = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '0.75rem' }}>
           Processing Jobs
         </h1>
-        <p style={{ color: 'var(--gray)' }}>
-          Monitor OCR processing jobs
+        <p style={{ color: 'var(--gray)', fontSize: '1rem' }}>
+          Monitor OCR processing jobs in real-time
         </p>
       </div>
 
-      <div className="card mb-4">
+      <div className="card" style={{ marginBottom: '2rem', padding: '1.5rem' }}>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {['all', 'queued', 'processing', 'completed', 'failed', 'cancelled'].map(f => (
             <button
@@ -91,20 +91,26 @@ const Jobs = () => {
       </div>
 
       {jobs.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-          <Activity size={48} color="var(--gray)" style={{ margin: '0 auto 1rem' }} />
-          <p style={{ color: 'var(--gray)' }}>No jobs found</p>
+        <div className="card" style={{ textAlign: 'center', padding: '4rem 3rem' }}>
+          <Activity size={64} color="var(--gray)" style={{ margin: '0 auto 1.5rem' }} />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>No jobs found</h3>
+          <p style={{ color: 'var(--gray)' }}>Upload documents to start processing jobs</p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {jobs.map(job => (
-            <div key={job._id} className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+            <div key={job._id} className="card" style={{ padding: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.25rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '0.25rem' }}>
-                    {job.type.replace('_', ' ').toUpperCase()}
-                  </h3>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '0.5rem', borderRadius: '0.5rem' }}>
+                      <Activity size={20} color="var(--primary)" />
+                    </div>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>
+                      {job.type.replace('_', ' ').toUpperCase()}
+                    </h3>
+                  </div>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginLeft: '2.5rem' }}>
                     {job.document?.title || 'Document deleted'}
                   </p>
                 </div>
@@ -122,10 +128,11 @@ const Jobs = () => {
 
               {job.status === 'processing' && (
                 <>
-                  <div className="progress-bar mb-2">
+                  <div className="progress-bar" style={{ marginBottom: '0.75rem' }}>
                     <div className="progress-bar-fill" style={{ width: `${job.progress.percentage}%` }} />
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--gray)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--gray)' }}>
+                    <span style={{ fontWeight: '500' }}>{job.progress.percentage}% complete</span>
                     <span>{job.progress.current} / {job.progress.total} pages</span>
                     {job.estimatedTimeRemaining && (
                       <span>~{Math.ceil(job.estimatedTimeRemaining / 60)}m remaining</span>
@@ -135,8 +142,15 @@ const Jobs = () => {
               )}
 
               {job.status === 'completed' && (
-                <div style={{ fontSize: '0.75rem', color: 'var(--gray)' }}>
-                  Completed in {(job.result.totalProcessingTime / 1000).toFixed(1)}s • 
+                <div style={{ 
+                  fontSize: '0.875rem', 
+                  color: 'var(--success)', 
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '0.5rem',
+                  fontWeight: '500'
+                }}>
+                  ✓ Completed in {(job.result.totalProcessingTime / 1000).toFixed(1)}s • 
                   Avg confidence: {job.result.averageConfidence.toFixed(0)}%
                 </div>
               )}
@@ -144,12 +158,13 @@ const Jobs = () => {
               {job.status === 'failed' && job.error && (
                 <div style={{
                   background: 'rgba(239, 68, 68, 0.1)',
-                  padding: '0.75rem',
+                  padding: '1rem',
                   borderRadius: '0.5rem',
-                  fontSize: '0.75rem',
-                  color: 'var(--danger)'
+                  fontSize: '0.875rem',
+                  color: 'var(--danger)',
+                  fontWeight: '500'
                 }}>
-                  Error: {job.error.message}
+                  ✕ Error: {job.error.message}
                 </div>
               )}
             </div>

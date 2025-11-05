@@ -18,13 +18,16 @@ const Navbar = () => {
       borderBottom: '1px solid var(--border)',
       position: 'sticky',
       top: 0,
-      zIndex: 100
+      zIndex: 100,
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
     }}>
       <div className="container" style={{ 
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'space-between',
-        height: '4rem'
+        height: '4.5rem',
+        maxWidth: '1400px',
+        margin: '0 auto'
       }}>
         <Link to="/dashboard" style={{ 
           display: 'flex', 

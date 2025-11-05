@@ -3,7 +3,7 @@ const router = express.Router();
 const { auth } = require('../middleware/auth');
 const { upload, calculateFileHash, validateFile, moveToProcessed } = require('../services/uploadService');
 const { addJob } = require('../services/jobQueue');
-// const pdfService = require('../services/pdfService'); // Disabled for now
+const pdfService = require('../services/pdfService');
 const Document = require('../models/Document');
 const Page = require('../models/Page');
 const path = require('path');
@@ -16,15 +16,6 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    // Temporarily reject PDF uploads since PDF processing is not yet implemented
-    if (req.file.mimetype === 'application/pdf') {
-      await fs.unlink(req.file.path);
-      return res.status(400).json({ 
-        error: 'PDF uploads are temporarily disabled', 
-        message: 'Please upload image files (JPG, PNG, TIFF) only. PDF support will be added soon.'
-      });
     }
 
     // Validate file
@@ -54,8 +45,24 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
     let totalPages = 1;
     let metadata = {};
     
-    // For now, skip PDF metadata extraction due to library compatibility
-    // Images and PDFs will both be processed with OCR
+    // For PDFs, get page count and metadata
+    if (fileType === 'pdf') {
+      try {
+        const pdfInfo = await pdfService.getPdfInfo(req.file.path);
+        totalPages = pdfInfo.pages || 1;
+        metadata = {
+          title: pdfInfo.title,
+          author: pdfInfo.author,
+          creator: pdfInfo.creator,
+          producer: pdfInfo.producer,
+          creationDate: pdfInfo.creationDate,
+          modificationDate: pdfInfo.modificationDate
+        };
+      } catch (error) {
+        console.warn('Failed to extract PDF metadata:', error);
+        // Continue with default values
+      }
+    }
 
     // Create document
     const document = new Document({

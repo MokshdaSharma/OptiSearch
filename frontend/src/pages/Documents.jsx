@@ -59,16 +59,16 @@ const Documents = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>Documents</h1>
-          <p style={{ color: 'var(--gray)' }}>Manage your uploaded documents</p>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '0.75rem' }}>Documents</h1>
+          <p style={{ color: 'var(--gray)', fontSize: '1rem' }}>Manage your uploaded documents</p>
         </div>
-        <Link to="/upload" className="btn btn-primary">Upload New</Link>
+        <Link to="/upload" className="btn btn-primary" style={{ fontSize: '1rem', padding: '0.75rem 1.5rem' }}>Upload New</Link>
       </div>
 
-      <div className="card mb-4">
+      <div className="card" style={{ marginBottom: '2rem', padding: '1.5rem' }}>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {['all', 'completed', 'processing', 'queued', 'failed'].map(f => (
             <button
@@ -83,23 +83,28 @@ const Documents = () => {
       </div>
 
       {documents.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-          <FileText size={48} color="var(--gray)" style={{ margin: '0 auto 1rem' }} />
-          <p style={{ color: 'var(--gray)' }}>No documents found</p>
+        <div className="card" style={{ textAlign: 'center', padding: '4rem 3rem' }}>
+          <FileText size={64} color="var(--gray)" style={{ margin: '0 auto 1.5rem' }} />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>No documents found</h3>
+          <p style={{ color: 'var(--gray)' }}>Upload your first document to get started</p>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-3" style={{ gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
             {documents.map(doc => (
-              <div key={doc._id} className="card">
-                <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <FileText size={24} color="var(--primary)" />
+              <div key={doc._id} className="card" style={{ padding: '2rem', transition: 'transform 0.2s' }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
+                <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                  <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: '0.75rem', borderRadius: '0.5rem' }}>
+                    <FileText size={24} color="var(--primary)" />
+                  </div>
                   <span className={`badge ${getStatusBadge(doc.status)}`}>{doc.status}</span>
                 </div>
-                <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '0.5rem' }} className="truncate">
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.75rem' }} className="truncate">
                   {doc.title}
                 </h3>
-                <p style={{ fontSize: '0.75rem', color: 'var(--gray)', marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '1.25rem' }}>
                   {doc.totalPages} pages • {(doc.fileSize / 1024 / 1024).toFixed(2)} MB
                 </p>
                 {doc.status === 'processing' && (
@@ -120,21 +125,21 @@ const Documents = () => {
           </div>
 
           {pagination && pagination.totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginTop: '3rem', alignItems: 'center' }}>
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="btn btn-outline btn-sm"
+                className="btn btn-outline"
               >
                 Previous
               </button>
-              <span style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+              <span style={{ padding: '0.5rem 1rem', fontSize: '1rem', fontWeight: '500' }}>
                 Page {page} of {pagination.totalPages}
               </span>
               <button
                 onClick={() => setPage(p => p + 1)}
                 disabled={page === pagination.totalPages}
-                className="btn btn-outline btn-sm"
+                className="btn btn-outline"
               >
                 Next
               </button>

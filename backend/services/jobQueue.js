@@ -2,7 +2,7 @@ const Job = require('../models/Job');
 const Document = require('../models/Document');
 const Page = require('../models/Page');
 const ocrService = require('./ocrService');
-// const pdfService = require('./pdfService'); // Disabled for now
+const pdfService = require('./pdfService');
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -274,17 +274,33 @@ class JobQueue {
     );
 
     if (document.fileType === 'pdf') {
-      // PDF support disabled temporarily
-      // For now, treat PDF as a single-page image
-      console.warn('PDF processing not supported yet, treating as single page');
-      const page = new Page({
-        document: document._id,
-        pageNumber: 1,
-        imagePath: document.filePath,
-        status: 'pending'
-      });
-      await page.save();
-      pages.push(page);
+      try {
+        // Convert PDF to images
+        console.log('Converting PDF to images:', document.filePath);
+        const pdfImagesDir = path.join(documentDir, 'pdf_pages');
+        const result = await pdfService.convertPdfToImages(document.filePath, pdfImagesDir);
+        
+        console.log(`PDF converted: ${result.totalPages} pages, ${result.imagePaths.length} images`);
+        
+        // Update document with actual page count
+        document.totalPages = result.totalPages;
+        await document.save();
+
+        // Create page entries for each image
+        for (let i = 0; i < result.imagePaths.length; i++) {
+          const page = new Page({
+            document: document._id,
+            pageNumber: i + 1,
+            imagePath: result.imagePaths[i],
+            status: 'pending'
+          });
+          await page.save();
+          pages.push(page);
+        }
+      } catch (error) {
+        console.error('PDF conversion failed:', error);
+        throw new Error(`PDF processing failed: ${error.message}`);
+      }
     } else {
       // Single image file
       const page = new Page({

@@ -92,13 +92,13 @@ const Upload = () => {
   ];
 
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '0.75rem' }}>
           Upload Documents
         </h1>
-        <p style={{ color: 'var(--gray)' }}>
-          Upload images (JPG, PNG, TIFF) to extract text with OCR
+        <p style={{ color: 'var(--gray)', fontSize: '1rem' }}>
+          Upload PDFs or images to extract text with OCR
         </p>
       </div>
 
@@ -130,14 +130,14 @@ const Upload = () => {
               or click to browse
             </p>
             <p style={{ color: 'var(--gray-light)', fontSize: '0.75rem' }}>
-              Supported: JPG, PNG, TIFF (max 50MB) • PDF support coming soon
+              Supported: PDF, JPG, PNG, TIFF (max 50MB)
             </p>
           </div>
 
           {/* File List */}
           {files.length > 0 && (
-            <div className="card mt-4">
-              <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>
+            <div className="card" style={{ marginTop: '1.5rem', padding: '2rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1.5rem' }}>
                 Selected Files ({files.length})
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -201,7 +201,7 @@ const Upload = () => {
 
         {/* Options */}
         <div>
-          <div className="card">
+          <div className="card" style={{ padding: '2rem' }}>
             <div 
               style={{ 
                 display: 'flex', 
@@ -214,7 +214,7 @@ const Upload = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Settings size={20} />
-                <h3 style={{ fontSize: '1rem', fontWeight: '600' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '600' }}>
                   OCR Options
                 </h3>
               </div>

@@ -86,105 +86,113 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '0.75rem', color: 'var(--text)' }}>
           Dashboard
         </h1>
-        <p style={{ color: 'var(--gray)' }}>
-          Welcome back! Here's an overview of your documents.
+        <p style={{ color: 'var(--gray)', fontSize: '1rem' }}>
+          Welcome back, Mokshda! Here's an overview of your documents.
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 mb-8">
-        <div className="card">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+        <div className="card" style={{ padding: '2rem', transition: 'transform 0.2s' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.5rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.75rem', fontWeight: '500' }}>
                 Total Documents
               </p>
-              <p style={{ fontSize: '2rem', fontWeight: '700' }}>
+              <p style={{ fontSize: '2.5rem', fontWeight: '700' }}>
                 {stats.totalDocuments}
               </p>
             </div>
             <div style={{ 
               background: 'rgba(79, 70, 229, 0.1)', 
-              padding: '1rem', 
-              borderRadius: '0.75rem' 
+              padding: '1.25rem', 
+              borderRadius: '1rem' 
             }}>
-              <FileText size={32} color="var(--primary)" />
+              <FileText size={36} color="var(--primary)" />
             </div>
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: '2rem', transition: 'transform 0.2s' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.5rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.75rem', fontWeight: '500' }}>
                 Processing
               </p>
-              <p style={{ fontSize: '2rem', fontWeight: '700' }}>
+              <p style={{ fontSize: '2.5rem', fontWeight: '700' }}>
                 {stats.processing}
               </p>
             </div>
             <div style={{ 
               background: 'rgba(79, 70, 229, 0.1)', 
-              padding: '1rem', 
-              borderRadius: '0.75rem' 
+              padding: '1.25rem', 
+              borderRadius: '1rem' 
             }}>
-              <Activity size={32} color="var(--primary)" />
+              <Activity size={36} color="var(--primary)" />
             </div>
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: '2rem', transition: 'transform 0.2s' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.5rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.75rem', fontWeight: '500' }}>
                 Completed
               </p>
-              <p style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--secondary)' }}>
+              <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--success)' }}>
                 {stats.completed}
               </p>
             </div>
             <div style={{ 
               background: 'rgba(16, 185, 129, 0.1)', 
-              padding: '1rem', 
-              borderRadius: '0.75rem' 
+              padding: '1.25rem', 
+              borderRadius: '1rem' 
             }}>
-              <TrendingUp size={32} color="var(--secondary)" />
+              <TrendingUp size={36} color="var(--success)" />
             </div>
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: '2rem', transition: 'transform 0.2s' }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.5rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.75rem', fontWeight: '500' }}>
                 Failed
               </p>
-              <p style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--danger)' }}>
+              <p style={{ fontSize: '2.5rem', fontWeight: '700', color: 'var(--danger)' }}>
                 {stats.failed}
               </p>
             </div>
             <div style={{ 
               background: 'rgba(239, 68, 68, 0.1)', 
-              padding: '1rem', 
-              borderRadius: '0.75rem' 
+              padding: '1.25rem', 
+              borderRadius: '1rem' 
             }}>
-              <Clock size={32} color="var(--danger)" />
+              <Clock size={36} color="var(--danger)" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="card mb-8">
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
+      <div className="card" style={{ marginBottom: '3rem', padding: '2rem' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', textAlign: 'center' }}>
           Quick Actions
         </h2>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           <Link to="/upload" className="btn btn-primary">
             <Upload size={18} />
             Upload Document
@@ -201,22 +209,23 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Documents */}
-      <div className="card mb-8">
+      <div className="card" style={{ marginBottom: '3rem', padding: '2rem' }}>
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
-          marginBottom: '1rem'
+          marginBottom: '1.5rem'
         }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '600' }}>
             Recent Documents
           </h2>
           <Link to="/documents" style={{ 
             color: 'var(--primary)', 
             fontSize: '0.875rem',
-            textDecoration: 'none'
+            textDecoration: 'none',
+            fontWeight: '500'
           }}>
-            View All
+            View All →
           </Link>
         </div>
 
@@ -266,22 +275,23 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Jobs */}
-      <div className="card">
+      <div className="card" style={{ padding: '2rem' }}>
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
-          marginBottom: '1rem'
+          marginBottom: '1.5rem'
         }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '600' }}>
             Recent Jobs
           </h2>
           <Link to="/jobs" style={{ 
             color: 'var(--primary)', 
             fontSize: '0.875rem',
-            textDecoration: 'none'
+            textDecoration: 'none',
+            fontWeight: '500'
           }}>
-            View All
+            View All →
           </Link>
         </div>
 
