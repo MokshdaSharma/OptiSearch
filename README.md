@@ -199,10 +199,3 @@ npm install pdf-poppler
 - [ ] Analytics dashboard
 - [ ] Mobile app
 
-## License
-
-MIT
-
-## Support
-
-For issues or questions, please create an issue in the repository.
