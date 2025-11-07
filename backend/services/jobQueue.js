@@ -148,35 +148,45 @@ class JobQueue {
         const page = pages[i];
         
         try {
-          // Perform OCR
-          const ocrResult = await ocrService.performOCR(
-            page.imagePath,
-            job.options.language,
-            job.options.preprocessing
-          );
+          // Skip OCR if page already has text (PDF pages)
+          if (page.status === 'completed' && page.text) {
+            console.log(`Page ${page.pageNumber} already has text, skipping OCR`);
+            results.push({
+              pageNumber: page.pageNumber,
+              success: true,
+              confidence: page.confidence || 100
+            });
+          } else {
+            // Perform OCR for image files
+            const ocrResult = await ocrService.performOCR(
+              page.imagePath,
+              job.options.language,
+              job.options.preprocessing
+            );
 
-          // Create thumbnail
-          const thumbnailPath = page.imagePath.replace(/(\.[^.]+)$/, '_thumb$1');
-          await ocrService.createThumbnail(page.imagePath, thumbnailPath);
+            // Create thumbnail
+            const thumbnailPath = page.imagePath.replace(/(\.[^.]+)$/, '_thumb$1');
+            await ocrService.createThumbnail(page.imagePath, thumbnailPath);
 
-          // Update page
-          page.text = ocrResult.text;
-          page.rawText = ocrResult.text;
-          page.confidence = ocrResult.confidence;
-          page.words = ocrResult.words;
-          page.lines = ocrResult.lines;
-          page.ocrLanguage = job.options.language;
-          page.thumbnailPath = thumbnailPath;
-          page.status = ocrResult.confidence < 60 ? 'low_quality' : 'completed';
-          page.processingTime = ocrResult.processingTime;
-          page.lastProcessedAt = new Date();
-          await page.save();
+            // Update page
+            page.text = ocrResult.text;
+            page.rawText = ocrResult.text;
+            page.confidence = ocrResult.confidence;
+            page.words = ocrResult.words;
+            page.lines = ocrResult.lines;
+            page.ocrLanguage = job.options.language;
+            page.thumbnailPath = thumbnailPath;
+            page.status = ocrResult.confidence < 60 ? 'low_quality' : 'completed';
+            page.processingTime = ocrResult.processingTime;
+            page.lastProcessedAt = new Date();
+            await page.save();
 
-          results.push({
-            pageNumber: page.pageNumber,
-            success: true,
-            confidence: ocrResult.confidence
-          });
+            results.push({
+              pageNumber: page.pageNumber,
+              success: true,
+              confidence: ocrResult.confidence
+            });
+          }
         } catch (error) {
           console.error(`Page ${page.pageNumber} OCR error:`, error);
           
@@ -275,30 +285,33 @@ class JobQueue {
 
     if (document.fileType === 'pdf') {
       try {
-        // Convert PDF to images
-        console.log('Converting PDF to images:', document.filePath);
-        const pdfImagesDir = path.join(documentDir, 'pdf_pages');
-        const result = await pdfService.convertPdfToImages(document.filePath, pdfImagesDir);
+        // Extract text directly from PDF (no image conversion needed)
+        console.log('Extracting text from PDF:', document.filePath);
+        const result = await pdfService.extractTextFromPdf(document.filePath);
         
-        console.log(`PDF converted: ${result.totalPages} pages, ${result.imagePaths.length} images`);
+        console.log(`PDF text extracted: ${result.totalPages} pages`);
         
         // Update document with actual page count
         document.totalPages = result.totalPages;
         await document.save();
 
-        // Create page entries for each image
-        for (let i = 0; i < result.imagePaths.length; i++) {
-          const page = new Page({
-            document: document._id,
-            pageNumber: i + 1,
-            imagePath: result.imagePaths[i],
-            status: 'pending'
-          });
-          await page.save();
-          pages.push(page);
-        }
+        // Split text by pages (approximation - pdf-parse doesn't give per-page text easily)
+        // We'll create a single page with all text for now
+        const page = new Page({
+          document: document._id,
+          pageNumber: 1,
+          imagePath: document.filePath, // Store PDF path
+          text: result.text,
+          rawText: result.text,
+          confidence: 100, // PDF text is 100% accurate
+          status: 'completed', // No OCR needed
+          ocrLanguage: document.ocrLanguage || 'eng'
+        });
+        await page.save();
+        pages.push(page);
+        
       } catch (error) {
-        console.error('PDF conversion failed:', error);
+        console.error('PDF text extraction failed:', error);
         throw new Error(`PDF processing failed: ${error.message}`);
       }
     } else {

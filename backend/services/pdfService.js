@@ -1,46 +1,36 @@
-const { pdfToPng } = require('pdf-to-png-converter');
-const pdfParse = require('pdf-parse');
+const pdf = require('pdf-parse');
 const path = require('path');
 const fs = require('fs').promises;
 
 /**
- * Convert PDF to images
+ * Extract text from PDF (PDFs already have text, no OCR needed)
  */
-async function convertPdfToImages(pdfPath, outputDir) {
+async function extractTextFromPdf(pdfPath) {
   try {
-    // Ensure output directory exists
-    await fs.mkdir(outputDir, { recursive: true });
+    console.log('Extracting text from PDF:', pdfPath);
 
-    // Convert PDF to PNG images
-    const pngPages = await pdfToPng(pdfPath, {
-      disableFontFace: false,
-      useSystemFonts: true,
-      viewportScale: 2.0,  // Higher resolution for better OCR
-      outputFolder: outputDir,
-      strictPagination: false,
-      verbosityLevel: 0
+    // Read PDF file
+    const dataBuffer = await fs.readFile(pdfPath);
+    
+    // Parse PDF with page-level text extraction
+    const data = await pdf(dataBuffer, {
+      pagerender: async function(pageData) {
+        const textContent = await pageData.getTextContent();
+        const strings = textContent.items.map(item => item.str);
+        return strings.join(' ');
+      }
     });
 
-    const imagePaths = pngPages.map((page, index) => {
-      const outputPath = path.join(outputDir, `page-${index + 1}.jpg`);
-      return outputPath;
-    });
-
-    // Convert PNG to JPEG and save
-    for (let i = 0; i < pngPages.length; i++) {
-      const page = pngPages[i];
-      const jpegPath = imagePaths[i];
-      await fs.writeFile(jpegPath, page.content);
-      console.log(`Converted PDF page ${i + 1}/${pngPages.length}`);
-    }
+    console.log(`PDF has ${data.numpages} pages, extracted ${data.text.length} characters`);
 
     return {
-      totalPages: pngPages.length,
-      imagePaths
+      totalPages: data.numpages,
+      text: data.text,
+      info: data.info
     };
   } catch (error) {
-    console.error('PDF conversion error:', error);
-    throw new Error(`Failed to convert PDF: ${error.message}`);
+    console.error('PDF text extraction error:', error);
+    throw new Error(`Failed to extract text from PDF: ${error.message}`);
   }
 }
 
@@ -50,7 +40,7 @@ async function convertPdfToImages(pdfPath, outputDir) {
 async function getPdfInfo(pdfPath) {
   try {
     const dataBuffer = await fs.readFile(pdfPath);
-    const data = await pdfParse(dataBuffer);
+    const data = await pdf(dataBuffer);
 
     return {
       pages: data.numpages,
@@ -69,6 +59,6 @@ async function getPdfInfo(pdfPath) {
 }
 
 module.exports = {
-  convertPdfToImages,
+  extractTextFromPdf,
   getPdfInfo
 };
