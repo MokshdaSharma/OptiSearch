@@ -189,13 +189,4 @@ npm install pdf-poppler
 - Large PDFs are processed page-by-page
 - All processing is asynchronous
 
-## Future Enhancements
-
-- [ ] Advanced image preprocessing
-- [ ] Multiple OCR engine support
-- [ ] Batch operations
-- [ ] Export search results
-- [ ] Document sharing
-- [ ] Analytics dashboard
-- [ ] Mobile app
 
