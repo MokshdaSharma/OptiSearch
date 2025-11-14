@@ -4,36 +4,36 @@ A comprehensive MERN stack application for uploading documents (PDFs/images), pe
 
 ## Features
 
-✅ **Upload & Validation**
+ **Upload & Validation**
 - PDF and image upload (JPEG, PNG, TIFF)
 - File type and size validation
 - Hash-based duplicate detection
 - Drag-and-drop interface
 
-✅ **OCR Pipeline**
+**OCR Pipeline**
 - Page-by-page OCR with Tesseract.js
 - Multi-language support (12 languages)
 - Image preprocessing (deskew, denoise, rotate, binarize)
 - Confidence scoring per page
 
-✅ **Asynchronous Processing**
+**Asynchronous Processing**
 - Job queue system with states (queued/processing/completed/failed)
 - Real-time progress updates via WebSocket
 - Resumable retries
 - Job cancellation
 
-✅ **Search & Indexing**
+**Search & Indexing**
 - MongoDB full-text search
 - Relevance-ranked results
 - Search filters (file type, confidence, date)
 - Hit highlighting and page previews
 
-✅ **Quality Controls**
+**Quality Controls**
 - Low-confidence page flagging
 - Re-process pages with different settings
 - Per-page confidence scores
 
-✅ **Professional UI**
+**Professional UI**
 - Modern, responsive design
 - Real-time dashboard
 - Toast notifications
